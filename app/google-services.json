@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "296894358798",
+    "project_id": "mobicash-70aae",
+    "storage_bucket": "mobicash-70aae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296894358798:android:dea26462425065193a235f",
+        "android_client_info": {
+          "package_name": "com.example.mobicash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgUBECxstPnJ07AAxZXi6X2Wvsthz5wkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
