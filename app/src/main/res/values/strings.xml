@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MobiCash</string>
+
+    <string name="default_web_client_id">
+        296894358798-8dqndbofe9eqgdhhmm00e6pqb07cvhhl.apps.googleusercontent.com
+    </string>
 </resources>
