@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -53,41 +54,54 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
+    //splash
+    implementation("androidx.core:core-splashscreen:1.2.0")
 
-    //Hilt
+    //Dagger Hilt
     implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    ksp(libs.dagger.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
-    //retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    //liveData
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.runtime.livedata)
 
-    // Kotlin Serialization
-    implementation(libs.kotlinx.serialization.json)
-
-    //ROOM
+    //room
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    //viewmodel
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    //corutinas
-    implementation(libs.kotlinx.coroutines.android)
-
-    //Coil
+    //navegacion
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.converter.gson)
+    implementation(libs.gson)
+
+    // biometric
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    //implementation("androidx.appcompat:appcompat:1.7.1")
+
+    //libreria para reproduccion de videos
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+
+    //libreria de lottie para animaciones.
+    implementation(libs.lottie.compose)
+
+    // Firebase
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.analytics)
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
     //Incons material 3
-    implementation(libs.androidx.material.icons.extended)
+    implementation("androidx.compose.material:material-icons-extended")
 
-    //Splash Api
-    implementation(libs.androidx.core.splashscreen)
 
 
     testImplementation(libs.junit)

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "296894358798",
+    "project_id": "mobicash-70aae",
+    "storage_bucket": "mobicash-70aae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296894358798:android:dea26462425065193a235f",
+        "android_client_info": {
+          "package_name": "com.example.mobicash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "296894358798-8dqndbofe9eqgdhhmm00e6pqb07cvhhl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mobicash",
+            "certificate_hash": "7d43fb1f318f81843b42f344f5c832456d584de0"
+          }
+        },
+        {
+          "client_id": "296894358798-e11ck7sd32nuqk7l5j2l3l8cj77eb9n8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgUBECxstPnJ07AAxZXi6X2Wvsthz5wkg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "296894358798-e11ck7sd32nuqk7l5j2l3l8cj77eb9n8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
