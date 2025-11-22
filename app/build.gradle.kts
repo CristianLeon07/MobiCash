@@ -83,6 +83,10 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.gson)
 
+    // biometric
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    //implementation("androidx.appcompat:appcompat:1.7.1")
+
     //libreria para reproduccion de videos
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)

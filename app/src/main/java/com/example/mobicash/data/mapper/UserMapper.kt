@@ -1,7 +1,6 @@
 package com.example.mobicash.data.mapper
 
-import com.example.mobicash.core.security.EncryptionUtils
-import com.example.mobicash.core.security.HashUtils
+import com.example.mobicash.core.utils.HashUtils
 import com.example.mobicash.data.local.UserEntity
 import com.example.mobicash.domain.models.UserModel
 

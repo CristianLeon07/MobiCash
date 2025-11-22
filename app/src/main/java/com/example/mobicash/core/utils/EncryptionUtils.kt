@@ -1,4 +1,4 @@
-package com.example.mobicash.core.security
+package com.example.mobicash.core.utils
 
 
 import android.security.keystore.KeyGenParameterSpec
@@ -9,7 +9,6 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import android.util.Base64
-import java.security.MessageDigest
 
 object EncryptionUtils {
 

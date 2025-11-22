@@ -1,4 +1,4 @@
-package com.example.mobicash.core.security
+package com.example.mobicash.core.utils
 
 
 object HashUtils {

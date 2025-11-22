@@ -2,8 +2,6 @@ package com.example.mobicash.ui.navigation
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-object Splash
 
 @Serializable
 object Login
@@ -12,12 +10,5 @@ object Login
 object Register
 
 @Serializable
-object Inicio {
-    const val route = "inicio"
-}
+object HomeApp
 
-@Serializable
-object Profile
-
-@Serializable
-data class Detail(val id: Int)
