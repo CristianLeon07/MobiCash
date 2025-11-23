@@ -3,6 +3,8 @@ package com.example.mobicash.data.local
 import android.content.Context
 import androidx.room.Room
 import com.example.mobicash.data.UserDatabase
+import com.example.mobicash.data.local.dao.BankAccountDao
+import com.example.mobicash.data.local.dao.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,5 +31,10 @@ class DataBaseModule {
     @Provides
     fun provideUserDao(userDatabase: UserDatabase): UserDao {
         return userDatabase.userDao()
+    }
+
+    @Provides
+    fun provideBankAccountDao(db: UserDatabase): BankAccountDao {
+        return db.bankAccountDao()
     }
 }

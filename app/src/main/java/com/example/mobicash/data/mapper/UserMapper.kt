@@ -1,7 +1,7 @@
 package com.example.mobicash.data.mapper
 
 import com.example.mobicash.core.utils.HashUtils
-import com.example.mobicash.data.local.UserEntity
+import com.example.mobicash.data.local.entities.UserEntity
 import com.example.mobicash.domain.models.UserModel
 
 /**
@@ -17,11 +17,13 @@ import com.example.mobicash.domain.models.UserModel
 
 fun UserEntity.toDomain(): UserModel = UserModel(
     user = this.user,
+    userHashed = this.userHashed,
     email = this.email,
     name = this.name,
-    pin = this.pinHashed, // recordá: en domain el pin será el hash
+    pin = this.pinHashed,
     photo = this.photo
 )
+
 
 fun UserModel.toData(): UserEntity {
     val userHash = HashUtils.sha256(this.user)
@@ -36,3 +38,4 @@ fun UserModel.toData(): UserEntity {
         photo = this.photo
     )
 }
+

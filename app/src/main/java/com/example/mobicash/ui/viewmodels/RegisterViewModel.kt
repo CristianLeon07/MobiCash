@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mobicash.core.utils.HashUtils
 import com.example.mobicash.domain.models.UserModel
 import com.example.mobicash.domain.usecase.AddUserUseCase
+import com.example.mobicash.domain.usecase.CreateBankAccountForUserUseCase
 import com.example.mobicash.domain.usecase.GetUserUseCase
 import com.example.mobicash.domain.usecase.LoginUserUseCase
 import com.example.mobicash.ui.utils.UiState
@@ -23,12 +25,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+
+    private val createBankAccountForUserUseCase: CreateBankAccountForUserUseCase,
     private val addUserUseCase: AddUserUseCase,
     private val getUserUseCase: GetUserUseCase,
     private val loginUserUseCase: LoginUserUseCase
 ) : ViewModel() {
 
     var user by mutableStateOf("")
+        private set
+
+    var userHashed by mutableStateOf("")
         private set
 
     var name by mutableStateOf("")
@@ -163,9 +170,12 @@ class RegisterViewModel @Inject constructor(
                     return@launch
                 }
 
+                val userHashed = HashUtils.sha256(user)
+
                 // Crear usuario
                 val newUser = UserModel(
                     user = user,
+                    userHashed = userHashed,
                     name = name,
                     email = email,
                     pin = pin,
@@ -173,6 +183,9 @@ class RegisterViewModel @Inject constructor(
                 )
 
                 addUserUseCase(newUser)
+
+                //Creamos de manera automatica la tarjeta
+                createBankAccountForUserUseCase(newUser.userHashed)
 
                 _uiState.value = UiState.Success(Unit)
 
