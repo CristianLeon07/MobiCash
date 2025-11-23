@@ -12,3 +12,6 @@ object Register
 @Serializable
 object HomeApp
 
+@Serializable
+object Profile
+

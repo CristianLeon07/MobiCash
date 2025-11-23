@@ -58,7 +58,6 @@ fun RegisterScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Observa UiState para navegación y errores
     LaunchedEffect(uiState) {
         when (uiState) {
             is UiState.Success -> {
@@ -82,7 +81,7 @@ fun RegisterScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background // Fondo del tema
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
 
         Box(
@@ -107,8 +106,6 @@ fun RegisterScreen(
 }
 
 
-// 2. CONTENIDO DE LA PANTALLA
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RegisterContent(
@@ -116,7 +113,7 @@ private fun RegisterContent(
     onNavigateToLogin: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val defaultTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+    val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         focusedBorderColor = MaterialTheme.colorScheme.primary,
         unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
         errorBorderColor = MaterialTheme.colorScheme.error,
@@ -136,30 +133,30 @@ private fun RegisterContent(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // TÍTULOS
+        // TÍTULOS PRINCIPALES
         Text(
             "Crear cuenta",
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
+
         Text(
             "Únete a Mobicash",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // CAMPOS DE TEXTO
-
         // USUARIO
         OutlinedTextField(
             value = viewModel.user,
             onValueChange = viewModel::onUserChange,
-            label = { Text("Usuario") },
+            label = { Text("Usuario", style = MaterialTheme.typography.bodyMedium) },
             leadingIcon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
             isError = viewModel.userError != null,
-            colors = defaultTextFieldColors,
+            textStyle = MaterialTheme.typography.bodyLarge,
+            colors = textFieldColors,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         )
@@ -167,14 +164,15 @@ private fun RegisterContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // NOMBRE
+        // NOMBRE COMPLETO
         OutlinedTextField(
             value = viewModel.name,
             onValueChange = viewModel::onNameChange,
-            label = { Text("Nombre completo") },
+            label = { Text("Nombre completo", style = MaterialTheme.typography.bodyMedium) },
             leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
             isError = viewModel.nameError != null,
-            colors = defaultTextFieldColors,
+            textStyle = MaterialTheme.typography.bodyLarge,
+            colors = textFieldColors,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         )
@@ -186,10 +184,11 @@ private fun RegisterContent(
         OutlinedTextField(
             value = viewModel.email,
             onValueChange = viewModel::onEmailChange,
-            label = { Text("Correo electrónico") },
+            label = { Text("Correo electrónico", style = MaterialTheme.typography.bodyMedium) },
             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
             isError = viewModel.emailError != null,
-            colors = defaultTextFieldColors,
+            textStyle = MaterialTheme.typography.bodyLarge,
+            colors = textFieldColors,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         )
@@ -197,13 +196,14 @@ private fun RegisterContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // PIN (Implementación de 4 cajas)
+        // PIN
         Text(
             text = "PIN (4 dígitos)",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.align(Alignment.Start) // Etiqueta separada
+            modifier = Modifier.align(Alignment.Start)
         )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         PinInputBoxes(
@@ -216,7 +216,7 @@ private fun RegisterContent(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // BOTÓN REGISTRAR
+        // BOTÓN REGISTRARME
         Button(
             onClick = { viewModel.registerUser() },
             colors = ButtonDefaults.buttonColors(
@@ -229,12 +229,17 @@ private fun RegisterContent(
                 .fillMaxWidth()
                 .height(52.dp)
         ) {
-            Text("Registrarme")
+            Text(
+                "Registrarme",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // BOTÓN INICIAR SESIÓN
+        // IR A LOGIN
         TextButton(
             onClick = onNavigateToLogin,
             colors = ButtonDefaults.textButtonColors(
@@ -243,16 +248,16 @@ private fun RegisterContent(
         ) {
             Text(
                 "¿Ya tienes cuenta? Inicia sesión",
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
     }
 }
 
-
 @Composable
 private fun LoadingOverlay() {
-    // ... (Tu código actual de LoadingOverlay)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -264,3 +269,4 @@ private fun LoadingOverlay() {
         )
     }
 }
+

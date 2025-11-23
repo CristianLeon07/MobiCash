@@ -100,7 +100,7 @@ class LoginViewModel @Inject constructor(
 
     /** Login exitoso por biometría */
     fun biometricLogin() {
-        // 💡 NOTA: Esta lógica requiere ser mejorada para cargar el usuario REAL,
+        // NOTA: Esta lógica requiere ser mejorada para cargar el usuario REAL,
         // usando el ID del último usuario activo (el punto 2 que discutimos).
         // Por ahora, se mantiene el placeholder.
         _uiState.value = UiState.Success(UserModel(user = "biometric", "", "", pin = ""))

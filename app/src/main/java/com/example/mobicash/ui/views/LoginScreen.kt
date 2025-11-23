@@ -1,8 +1,11 @@
 package com.example.mobicash.ui.views
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -72,20 +76,11 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
-    val activity = remember(context) {
-        context as? FragmentActivity
-    }
-
-    val biometricAuthenticator = remember(activity) {
-        activity?.let { BiometricAuthenticatorImpl(it) }
-    }
-
-    // Código de LaunchedEffect y Biometría permanece sin cambios...
+    val activity = remember(context) { context as? FragmentActivity }
+    val biometricAuthenticator = remember(activity) { activity?.let { BiometricAuthenticatorImpl(it) } }
 
     LaunchedEffect(biometricAuthenticator) {
-        biometricAuthenticator?.let {
-            viewModel.checkBiometricStatus(it)
-        }
+        biometricAuthenticator?.let { viewModel.checkBiometricStatus(it) }
     }
 
     LaunchedEffect(uiState) {
@@ -106,67 +101,99 @@ fun LoginScreen(
         }
     }
 
-    // Define el estilo de los campos de texto basado en RegisterScreen
-    val defaultTextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+    val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         focusedBorderColor = MaterialTheme.colorScheme.primary,
-        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
         cursorColor = MaterialTheme.colorScheme.primary,
         focusedLabelColor = MaterialTheme.colorScheme.primary,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        unfocusedLabelColor = MaterialTheme.colorScheme.outline
     )
 
-    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp) // padding simétrico
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .padding(horizontal = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // 1. Icono / Logo
-            Icon(
-                imageVector = Icons.Default.MonetizationOn,
-                contentDescription = "MobiCash Logo",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(80.dp)
-            )
-            Spacer(Modifier.height(48.dp))
 
-            // TÍTULO (Opcional, para dar contexto)
+            /** --- LOGO CIRCULAR BANCO STYLE --- **/
+            Box(
+                modifier = Modifier
+                    .size(95.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.MonetizationOn,
+                    contentDescription = "Logo",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(55.dp)
+                )
+            }
+
+            Spacer(Modifier.height(40.dp))
+
+            /** --- TITULOS --- **/
             Text(
                 "Bienvenido",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
                 color = MaterialTheme.colorScheme.onBackground
             )
+
             Text(
                 "Inicia sesión para continuar",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                modifier = Modifier.padding(top = 4.dp)
             )
-            Spacer(Modifier.height(32.dp))
 
+            Spacer(Modifier.height(35.dp))
+
+            /** --- CAMPO USUARIO --- **/
             OutlinedTextField(
                 value = viewModel.user,
                 onValueChange = viewModel::onUserChange,
                 label = { Text("Usuario") },
-                leadingIcon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
-                colors = defaultTextFieldColors,
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.AccountCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
+                colors = textFieldColors,
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(22.dp))
 
-            // PIN (Implementación de 4 cajas)
+            /** --- PIN --- **/
             Text(
                 text = "Ingresa tu PIN",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.align(Alignment.Start) // Etiqueta separada
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(bottom = 8.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
             PinInputBoxes(
                 pinValue = viewModel.pin,
@@ -175,21 +202,27 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
+            Spacer(Modifier.height(38.dp))
 
-            Spacer(Modifier.height(32.dp))
-
-            // 4. Botón de iniciar sesión (FUNCIONAL)
+            /** --- BOTON LOGIN --- **/
             Button(
                 onClick = { viewModel.login() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
-                // enabled = viewModel.isLoginFormValid
-            ) { Text("Iniciar sesión") }
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Text(
+                    "Iniciar sesión",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
 
-            Spacer(Modifier.height(25.dp))
+            Spacer(Modifier.height(22.dp))
 
-            // 6. TextButton sutil para Biometría (Flujo de Huella Preservado)
+            /** --- BIOMETRIA --- **/
             if (viewModel.isBiometricAvailable) {
                 TextButton(
                     onClick = {
@@ -203,7 +236,9 @@ fun LoginScreen(
                                     }
                                 },
                                 onError = { msg ->
-                                    scope.launch { snackbarHostState.showSnackbar(msg) }
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(msg)
+                                    }
                                 }
                             )
                         }
@@ -212,27 +247,43 @@ fun LoginScreen(
                     Icon(
                         Icons.Default.Fingerprint,
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(22.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(Modifier.width(4.dp))
-                    Text("Ingresa con tu huella", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        "Ingresar con huella",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
                 }
             }
 
             Spacer(Modifier.height(20.dp))
 
-            // 5. Text ¿No tienes cuenta? REGÍSTRATE
-            TextButton(onClick = { navController.navigate(Register) }) {
+            /** --- REGISTRO --- **/
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "¿No tienes cuenta? ",
-                    color = Color.Gray
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
-                Text(
-                    text = "REGÍSTRATE",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
+                TextButton(onClick = { navController.navigate(Register) }) {
+                    Text(
+                        "REGÍSTRATE",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
             }
+
         }
     }
 }

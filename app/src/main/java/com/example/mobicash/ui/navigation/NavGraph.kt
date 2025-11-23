@@ -12,6 +12,7 @@ import com.example.mobicash.ui.views.RegisterScreen
 import com.example.mobicash.ui.viewmodels.LoginViewModel
 import com.example.mobicash.ui.viewmodels.RegisterViewModel
 import com.example.mobicash.ui.views.HomeScreen
+import com.example.mobicash.ui.views.ProfileScreen
 
 
 @Composable
@@ -42,6 +43,12 @@ fun NavGraph() {
         composable<HomeApp> {
             // val registerViewModel: RegisterViewModel = hiltViewModel<RegisterViewModel>()
             HomeScreen(navController = navController)
+        }
+
+        // ProfileScreen
+        composable<Profile> {
+            // val registerViewModel: RegisterViewModel = hiltViewModel<RegisterViewModel>()
+            ProfileScreen(navController = navController)
         }
 
     }
