@@ -29,4 +29,8 @@ interface BankAccountDao {
     //verificar si el usuario ya tiene cuenta
     @Query("SELECT COUNT(*) FROM bank_accounts WHERE userHashed = :userHashed")
     suspend fun countAccountsByUser(userHashed: String): Int
+
+    @Query("DELETE FROM bank_accounts WHERE userHashed = :userHashed")
+    suspend fun deleteByUserHashed(userHashed: String)
+
 }

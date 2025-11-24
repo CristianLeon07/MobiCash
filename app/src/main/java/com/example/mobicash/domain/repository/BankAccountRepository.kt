@@ -10,4 +10,5 @@ interface BankAccountRepository {
 
     suspend fun updateBalance(accountNumberHashed: String, newBalance: Long)
 
+    suspend fun deleteByUserHashed(string: String)
 }

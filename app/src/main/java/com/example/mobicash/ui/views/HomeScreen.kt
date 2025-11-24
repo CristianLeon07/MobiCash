@@ -1,3 +1,4 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
 package com.example.mobicash.ui.views
 
 
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -75,7 +77,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -137,7 +139,7 @@ fun HomeScreen(
                     )
                 }
 
-                HorizontalDivider()
+                Divider()
 
                 NavigationDrawerItem(
                     label = { Text("Mi Perfil") },
@@ -200,9 +202,6 @@ fun HomeScreen(
                     .fillMaxSize()
             ) {
 
-                // -------------------------------------------------------
-                // ESTADO PRINCIPAL
-                // -------------------------------------------------------
                 when (uiState) {
 
                     is UiState.Loading -> {
@@ -221,9 +220,7 @@ fun HomeScreen(
                     is UiState.Success -> {
                         val user = (uiState as UiState.Success<UserModel>).data
 
-                        // ----------------------
                         // Saludo
-                        // ----------------------
                         Text(
                             text = "Hola, ${user.name}",
                             style = MaterialTheme.typography.headlineMedium,
@@ -237,8 +234,7 @@ fun HomeScreen(
 
                         Spacer(Modifier.height(20.dp))
 
-
-                        //  TARJETA BANCARIA
+                        // TARJETA BANCARIA
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -263,19 +259,31 @@ fun HomeScreen(
 
                                     Spacer(Modifier.height(6.dp))
 
-                                    Text(
-                                        text = cardInfo?.maskedCardNumber ?: "**** **** **** ****",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = Color.White
-                                    )
+                                    if (cardInfo != null) {
+                                        Text(
+                                            text = cardInfo!!.maskedCardNumber,
+                                            style = MaterialTheme.typography.headlineMedium,
+                                            color = Color.White
+                                        )
+                                        Spacer(Modifier.height(12.dp))
 
-                                    Spacer(Modifier.height(12.dp))
+                                        Text(
+                                            text = "$${cardInfo!!.balance}",
+                                            style = MaterialTheme.typography.displayLarge,
+                                            color = Color.White
+                                        )
 
-                                    Text(
-                                        text = "$${cardInfo?.balance ?: "0"}",
-                                        style = MaterialTheme.typography.displayLarge,
-                                        color = Color.White
-                                    )
+                                    } else {
+                                        Box(
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .height(50.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator(color = Color.White)
+                                        }
+                                    }
+
                                 }
 
                                 // círculos decorativos
@@ -292,9 +300,7 @@ fun HomeScreen(
 
                         Spacer(Modifier.height(28.dp))
 
-                        // ======================================================
-                        // SECCIÓN DE ACCIONES
-                        // ======================================================
+                        // ACCIONES RÁPIDAS
                         Text(
                             "Acciones rápidas",
                             style = MaterialTheme.typography.titleLarge,
@@ -314,9 +320,7 @@ fun HomeScreen(
 
                         Spacer(Modifier.height(30.dp))
 
-                        // ======================================================
-                        // MOVIMIENTOS
-                        // ======================================================
+                        // MOVIMIENTOS RECIENTES
                         Text(
                             "Movimientos recientes",
                             style = MaterialTheme.typography.titleLarge
@@ -347,7 +351,6 @@ fun HomeScreen(
         }
     }
 }
-
 
 // ---------------------------------------------------
 // COMPONENTE ACCIÓN RÁPIDA
@@ -382,4 +385,5 @@ fun QuickAction(
         )
     }
 }
+
 

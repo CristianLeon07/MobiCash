@@ -9,7 +9,6 @@ import androidx.room.ColumnInfo
 
 @Entity(tableName = "bank_accounts")
 data class BankAccountEntity(
-
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val userHashed: String,

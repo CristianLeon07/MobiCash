@@ -26,7 +26,12 @@ class BankAccountDataSourceImpl @Inject constructor(
     }
 
 
+
     override suspend fun userHasAccount(userHashed: String): Boolean {
         return bankAccountDao.countAccountsByUser(userHashed) > 0
+    }
+
+    override suspend fun deleteByUserHashed(userHashed: String) {
+        bankAccountDao.deleteByUserHashed(userHashed)
     }
 }

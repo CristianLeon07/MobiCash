@@ -13,4 +13,6 @@ interface BankAccountDataSource {
     suspend fun updateAccount(account: BankAccountEntity)
 
     suspend fun userHasAccount(userHashed: String): Boolean
+
+    suspend fun deleteByUserHashed(userHashed: String)
 }

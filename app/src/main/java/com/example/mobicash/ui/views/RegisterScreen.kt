@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,6 +57,8 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val showDeleteDialog by viewModel.showDeleteDialog.collectAsState()
+
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState) {
@@ -101,9 +104,35 @@ fun RegisterScreen(
             if (uiState is UiState.Loading) {
                 LoadingOverlay()
             }
+
+            // ----------------------------
+            //     DIÁLOGO DE CONFIRMACIÓN
+            // ----------------------------
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.onCancelDelete() },
+                    title = {
+                        Text("Usuario existente")
+                    },
+                    text = {
+                        Text("Ya existe un usuario registrado en este dispositivo. ¿Deseas borrarlo y registrar uno nuevo?")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.onConfirmDelete() }) {
+                            Text("Sí, borrar")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.onCancelDelete() }) {
+                            Text("Cancelar")
+                        }
+                    }
+                )
+            }
         }
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -256,6 +285,8 @@ private fun RegisterContent(
     }
 }
 
+
+
 @Composable
 private fun LoadingOverlay() {
     Box(
@@ -269,4 +300,3 @@ private fun LoadingOverlay() {
         )
     }
 }
-

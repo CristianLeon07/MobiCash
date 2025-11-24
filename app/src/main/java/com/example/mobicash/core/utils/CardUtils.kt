@@ -3,6 +3,8 @@ package com.example.mobicash.core.utils
 import android.util.Base64
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.text.NumberFormat
+import java.util.Locale
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -57,9 +59,29 @@ object CardUtils {
         return String(decryptedBytes)
     }
 
-    // enmascaramos la tarjeta
+    /* enmascaramos la tarjeta
     fun maskCardNumber(cardNumber: String): String {
         return cardNumber.replaceRange(0, cardNumber.length - 4, "*".repeat(cardNumber.length - 4))
     }
+     */
+
+    fun formatoTarjeta(numero: String): String {
+        if (numero.length != 14) return numero
+
+        val grupo1 = numero.substring(0, 4)
+        val grupo2 = numero.substring(4, 8)
+        val grupo3 = numero.substring(8, 12)
+        val ultimos2 = numero.substring(12, 14)
+
+        return "$grupo1 $grupo2 $grupo3 - $ultimos2"
+    }
+
+    fun formatMoneda(numero: Double): String {
+        val formato = NumberFormat.getInstance(Locale("es", "CO"))
+        formato.maximumFractionDigits = 0
+        formato.minimumFractionDigits = 0
+        return formato.format(numero)
+    }
+
 
 }

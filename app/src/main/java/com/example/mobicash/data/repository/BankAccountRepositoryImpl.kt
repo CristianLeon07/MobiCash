@@ -65,4 +65,8 @@ class BankAccountRepositoryImpl @Inject constructor(
         dataSource.updateAccount(updatedAccount)
     }
 
+    override suspend fun deleteByUserHashed(userHashed: String) {
+        dataSource.deleteByUserHashed(userHashed)
+    }
+
 }

@@ -2,7 +2,9 @@ package com.example.mobicash.domain.usecase
 
 import com.example.mobicash.core.utils.CardUtils
 import com.example.mobicash.domain.models.CardInfo
+import com.example.mobicash.domain.models.UserModel
 import com.example.mobicash.domain.repository.BankAccountRepository
+import com.example.mobicash.domain.repository.UserRepository
 import javax.inject.Inject
 
 class CreateBankAccountForUserUseCase @Inject constructor(
@@ -25,13 +27,27 @@ class GetUserCardInfoUseCase @Inject constructor(
             account.accountNumberEncrypted,
             account.accountNumberIV
         )
-
-        return CardInfo(
-            maskedCardNumber = CardUtils.maskCardNumber(realCardNumber),
+        val card = CardInfo(
+            maskedCardNumber = CardUtils.formatoTarjeta(realCardNumber),
             last4 = realCardNumber.takeLast(4),
-            balance = account.balance,
+            balance = CardUtils.formatMoneda(account.balance),
             accountType = account.accountType,
             status = account.status
         )
+
+        return card
     }
 }
+
+class DeleteUserAndAccountsUseCase @Inject constructor(
+    private val userRepository: UserRepository,
+    private val bankAccountRepository: BankAccountRepository
+) {
+    suspend operator fun invoke(user: UserModel) {
+        // 1. Borrar cuentas bancarias relacionadas
+        bankAccountRepository.deleteByUserHashed(user.userHashed)
+        // 2. Borrar usuario
+        userRepository.delete(user)
+    }
+}
+

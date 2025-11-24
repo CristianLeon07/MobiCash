@@ -1,5 +1,6 @@
 package com.example.mobicash.ui.viewmodels
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,7 @@ import com.example.mobicash.core.utils.HashUtils
 import com.example.mobicash.domain.models.UserModel
 import com.example.mobicash.domain.usecase.AddUserUseCase
 import com.example.mobicash.domain.usecase.CreateBankAccountForUserUseCase
+import com.example.mobicash.domain.usecase.DeleteUserAndAccountsUseCase
 import com.example.mobicash.domain.usecase.GetUserUseCase
 import com.example.mobicash.domain.usecase.LoginUserUseCase
 import com.example.mobicash.ui.utils.UiState
@@ -20,8 +22,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import javax.inject.Inject
-
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
@@ -29,7 +31,9 @@ class RegisterViewModel @Inject constructor(
     private val createBankAccountForUserUseCase: CreateBankAccountForUserUseCase,
     private val addUserUseCase: AddUserUseCase,
     private val getUserUseCase: GetUserUseCase,
-    private val loginUserUseCase: LoginUserUseCase
+    private val loginUserUseCase: LoginUserUseCase,
+    private val deleteUserAndAccountsUseCase: DeleteUserAndAccountsUseCase
+
 ) : ViewModel() {
 
     var user by mutableStateOf("")
@@ -61,6 +65,12 @@ class RegisterViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UiState<Unit>>(UiState.Idle)
     val uiState: StateFlow<UiState<Unit>> = _uiState
+
+    // --- NUEVO ---
+    private val _showDeleteDialog = MutableStateFlow(false)
+    val showDeleteDialog: StateFlow<Boolean> = _showDeleteDialog
+
+    private var pendingNewUser: UserModel? = null
 
     // ---------------------
     // Updates
@@ -142,7 +152,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun isValidEmail(email: String): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     // ---------------------
@@ -153,27 +163,13 @@ class RegisterViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = UiState.Loading
-            try {
-                // Validar si usuario ya existe
-                val existingUser = loginUserUseCase(user)
-                if (existingUser != null) {
-                    userError = "Este usuario ya existe"
-                    _uiState.value = UiState.Error("El usuario ya está registrado")
-                    return@launch
-                }
 
-                // Validar si email ya existe
-                val allUsers = getUserUseCase().first() // Traemos todos los usuarios
-                if (allUsers.any { it.email == email }) {
-                    emailError = "Este correo ya fue registrado"
-                    _uiState.value = UiState.Error("El correo ya está registrado")
-                    return@launch
-                }
+            // Si ya existe un usuario → pedir confirmación (Opción B)
+            val existingUsers = getUserUseCase().first()
+            if (existingUsers.isNotEmpty()) {
 
                 val userHashed = HashUtils.sha256(user)
-
-                // Crear usuario
-                val newUser = UserModel(
+                pendingNewUser = UserModel(
                     user = user,
                     userHashed = userHashed,
                     name = name,
@@ -182,16 +178,59 @@ class RegisterViewModel @Inject constructor(
                     photo = null
                 )
 
-                addUserUseCase(newUser)
-
-                //Creamos de manera automatica la tarjeta
-                createBankAccountForUserUseCase(newUser.userHashed)
-
-                _uiState.value = UiState.Success(Unit)
-
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error("Error al registrar: ${e.message}")
+                _showDeleteDialog.value = true
+                return@launch
             }
+
+            // No hay usuarios → registrar normal
+            registerNewUser()
         }
     }
+
+    private suspend fun registerNewUser() {
+        try {
+            val userHashed = HashUtils.sha256(user)
+
+            val newUser = UserModel(
+                user = user,
+                userHashed = userHashed,
+                name = name,
+                email = email,
+                pin = pin,
+                photo = null
+            )
+
+            addUserUseCase(newUser)
+            createBankAccountForUserUseCase(newUser.userHashed)
+
+            _uiState.value = UiState.Success(Unit)
+
+        } catch (e: Exception) {
+            _uiState.value = UiState.Error("Error al registrar: ${e.message}")
+        }
+    }
+
+    // ---------------------
+    // Confirmaciones
+    // ---------------------
+    fun onConfirmDelete() = viewModelScope.launch {
+        val existingUsers = getUserUseCase().first()
+        val oldUser = existingUsers.firstOrNull()
+        val newUser = pendingNewUser ?: return@launch
+
+        if (oldUser != null) {
+            deleteUserAndAccountsUseCase(oldUser)
+        }
+
+        addUserUseCase(newUser)
+        createBankAccountForUserUseCase(newUser.userHashed)
+
+        _showDeleteDialog.value = false
+        _uiState.value = UiState.Success(Unit)
+    }
+
+    fun onCancelDelete() {
+        _showDeleteDialog.value = false
+    }
 }
+
